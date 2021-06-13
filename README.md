@@ -9,6 +9,9 @@
 * **Module Conflicts**: no known conflicts, but its plausible that any modules change the playlist or ambient sound data could conflict
 * **Translation Support**: Playlist import is localised at the moment, but nothing else.
 
+## Important information regarding Foundry VTT version 0.8+
+0.8 vastly changed how audio is handled in Foundry VTT and as a result broke the heck out of bellows. Currently it is NOT supported, but fixes are underway to get bellows working on 0.8.6 ASAP. If you desperately need Bellows for your games, I would recommend NOT upgrading past 0.7.x until the issues are resolved. Thank you for your patience! 
+
 ## Link(s) to Module
 * https://github.com/casualchameleon/Bellows
 * https://raw.githubusercontent.com/casualchameleon/Bellows/master/module.json
