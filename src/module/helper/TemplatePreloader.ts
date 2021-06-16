@@ -1,4 +1,4 @@
-import "../../../static/templates/**/*.html";
+import "../../../static/templates/**/*.hbs";
 
 export class TemplatePreloader {
     /**
@@ -6,6 +6,7 @@ export class TemplatePreloader {
      */
     static async preloadHandlebarsTemplates() {
         const templatePaths = ["__ALL_TEMPLATES__"];
+        
         return loadTemplates(templatePaths);
     }
 }

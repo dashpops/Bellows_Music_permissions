@@ -1,34 +1,33 @@
-import { YouTubePlaylistImportService } from '../apis/YouTubePlaylistImportService.js';
-import * as MusicStreaming from '../config.js';
+import { YouTubePlaylistImportService } from "../apis/YouTubePlaylistImportService.js";
 
-export class PlaylistImportForm extends FormApplication {
-  constructor(object = {}, options = {}) {
-    
-    options.height = 'auto';
+export class PlaylistImportForm extends FormApplication<any, any, any> {
+  working: boolean;
+
+  constructor(object, options) {
+    options.height = "auto";
     super(object, options);
-    this.importService = new YouTubePlaylistImportService();
-    this.playlistItems = [];
+    this.working = false;
+    //this.importService = new YouTubePlaylistImportService();
+    //this.playlistItems = [];
   }
   
   static get defaultOptions() {
-    const options = super.defaultOptions;
-    options.template = MusicStreaming.templates.importYoutubePlaylist;
-    options.title = game.i18n.localize('bellows.import-yt-playlist-nav-text');
-    
-    return options;
+    return mergeObject(super.defaultOptions, {
+      title: game.i18n.localize("bellows.import-yt-playlist-nav-text"),
+      template: "/modules/bellows/templates/apps/import-youtube-playlist.html"
+    } as FormApplication.Options);
   }
   
   activateListeners(html) {
     super.activateListeners(html);
     
-    html.find('button[id="bellows-yt-import-btn-import"]').click(async () => {
+    html.find("button[id='bellows-yt-import-btn-import']").on("click", (async () => {
       if (this.working) {
-        ui.notifications.error(game.i18n.localize('bellows.import-yt-playlist-msg-already-working'));
+        ui.notifications?.error(game.i18n.localize('bellows.import-yt-playlist-msg-already-working'));
         return;
       }
       
       this.working = true;
-      this.error = null;
       this.playlistItems = [];
       
       await this.rerender();
@@ -37,7 +36,7 @@ export class PlaylistImportForm extends FormApplication {
       this.working = false;
       
       await this.rerender();
-    });
+    }));
   }
   
   getData() {
@@ -50,17 +49,17 @@ export class PlaylistImportForm extends FormApplication {
   async _onImportPlaylist(playlistStr) {
     let key = this.importService.extractPlaylistKey(playlistStr);
     if (!key) {
-      ui.notifications.error(game.i18n.localize('bellows.import-yt-playlist-msg-invalid-key'));
+      ui.notifications?.error(game.i18n.localize('bellows.import-yt-playlist-msg-invalid-key'));
       return;
     }
     try {
       this.playlistItems = await this.importService.getPlaylistInfo(key);
     } catch(ex) {
       if (ex == 'Invalid Playlist') {
-        ui.notifications.error(game.i18n.format('bellows.import-yt-playlist-msg-key-not-found', {playlistKey: key}));
+        ui.notifications?.error(game.i18n.format('bellows.import-yt-playlist-msg-key-not-found', {playlistKey: key}));
       } else {
-        ui.notifications.error(game.i18n.localize('bellows.import-yt-playlist-msg-error'));
-        MusicStreaming.log(ex);
+        ui.notifications?.error(game.i18n.localize('bellows.import-yt-playlist-msg-error'));
+        console.log(ex);
       }
     }
   }

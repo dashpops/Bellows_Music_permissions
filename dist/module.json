@@ -21,7 +21,7 @@
 
   ],
   "esmodules": [
-    "/module/bellows.js"
+    "bellows.js"
   ],
   "scripts": [
   
