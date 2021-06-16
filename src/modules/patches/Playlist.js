@@ -66,9 +66,7 @@ overrideFunc(Playlist.prototype, 'playSound', function(super_playSound, sound)
 {
 	if (!hasProperty(sound.data, "flags.bIsStreamed") || !sound.data.flags.bIsStreamed)
 	{
-	    console.log("playSound value of bIsStreamed=" + hasProperty(sound.data, "sound.data.flags.bIsStreamed"))
 		super_playSound.call(this, sound);
-		console.log("calling super playerSound")
 		return;
 	}
 

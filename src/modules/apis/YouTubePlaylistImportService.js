@@ -132,7 +132,6 @@ export class YouTubePlaylistImportService {
 						volume: realVolume,
 						path: 'invalid.mp3',
 						repeat: false,
-						streamed: true,
 						flags: {
 							bIsStreamed: true,
 							streamingApi: 'youtube',
@@ -141,7 +140,7 @@ export class YouTubePlaylistImportService {
 					});
 				}
 				
-				await playlist.createEmbeddedEntity("PlaylistSound", playlistSounds);
+				await playlist.createEmbeddedDocuments("PlaylistSound", playlistSounds);
 				resolve();
 			} catch (ex) {
 				reject(ex);
