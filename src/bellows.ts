@@ -1,10 +1,12 @@
-import { ImportPlaylistFeature } from "./module/features/ImportPlaylistFeature";
+import { YoutubeApiFeature } from "./module/features/YoutubeFeature";
 import { TemplatePreloader } from "./module/helper/TemplatePreloader";
+import { BellowsSettings } from "./module/helper/Settings"
 
-Hooks.once("init", async () =>
-{
+Hooks.once("init", async () => {
     console.log('Bellows | Initializing Bellows - The lungs of the Foundry!');
 
+    BellowsSettings.registerSettings();
+    
     await TemplatePreloader.preloadHandlebarsTemplates();
 });
 
@@ -16,7 +18,7 @@ Hooks.once("ready", async () => {
  * Feature Hooks
  */
 
-ImportPlaylistFeature.hooks();
+YoutubeApiFeature.hooks();
 
 if (module.hot) {
     module.hot.accept();

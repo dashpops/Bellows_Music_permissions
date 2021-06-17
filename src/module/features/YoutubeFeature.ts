@@ -1,7 +1,12 @@
-import { PlaylistImportForm } from "../applications/PlaylistImportForm";
+import { YoutubePlaylistImportForm } from "../applications/YoutubePlaylistImportForm";
 
-export class ImportPlaylistFeature {
+export class YoutubeApiFeature {
     static hooks() {
+        Hooks.once("init", async () => {
+            console.log(`Bellows | Initializing YoutubeApi`);
+            
+        });
+
         Hooks.on("renderPlaylistDirectory", (html) => {
             if (!game.user?.isGM) {
                 return;
@@ -15,7 +20,7 @@ export class ImportPlaylistFeature {
             html.find(".directory-footer").append(importButton);
 
             importButton.on("click", () => {
-                new PlaylistImportForm({}, {}).render(true);
+                new YoutubePlaylistImportForm({}, {}).render(true);
             });	
         });
     }

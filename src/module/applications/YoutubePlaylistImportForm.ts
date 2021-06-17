@@ -1,7 +1,7 @@
 import { YoutubePlaylistItem } from "../types/YoutubePlaylistItem.js";
 import { YouTubePlaylistImportService } from "../services/YouTubePlaylistImportService.js";
 
-export class PlaylistImportForm extends FormApplication<any, any, any> {
+export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
 
   private _working: boolean;
   private _playlistItems: YoutubePlaylistItem[];

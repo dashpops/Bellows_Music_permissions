@@ -40,5 +40,8 @@
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-import-glob-loader": "^1.6.3"
+  },
+  "dependencies": {
+    "@types/youtube": "0.0.42"
   }
 }
