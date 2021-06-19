@@ -1,10 +1,13 @@
+import { Logger } from "../../utils";
+import { YoutubeIframeApi } from "../api/YoutubeIframeApi";
 import { YoutubePlaylistImportForm } from "../applications/YoutubePlaylistImportForm";
 
 export class YoutubeApiFeature {
     static hooks() {
         Hooks.once("init", async () => {
-            console.log(`Bellows | Initializing YoutubeApi`);
+            Logger.Log("Initializing YoutubeApi Feature");
             
+            await YoutubeIframeApi.initializeApi();
         });
 
         Hooks.on("renderPlaylistDirectory", (html) => {

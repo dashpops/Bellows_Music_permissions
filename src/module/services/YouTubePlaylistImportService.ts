@@ -1,4 +1,5 @@
-import { YoutubePlaylistItem } from '../types/YoutubePlaylistItem.js';
+import { YoutubePlaylistItem } from '../../types/YoutubePlaylistItem.js';
+import { Logger } from '../../utils.js';
 import { getApi } from './index.js';
 
 
@@ -69,7 +70,7 @@ export class YouTubePlaylistImportService {
 			let api = getApi('youtube');
 			if (!api || !api.isReady()) {
 				//this should never really happen. The API is created during Foundry init.
-				console.log(`Bellows | Unable to extract playlist info - API not ready`);
+				Logger.Log("Unable to extract playlist info - API not ready");
 				reject('API not ready');
 				return;
 			}	
@@ -89,7 +90,7 @@ export class YouTubePlaylistImportService {
 					resolve(videos);
 				}
 				catch (ex) {
-					console.log('Bellows | Error scraping youtube iframe: ' + ex);
+					Logger.Log("Error scraping youtube iframe: " + ex);
 					reject(ex);
 				}
 				finally {
@@ -99,8 +100,8 @@ export class YouTubePlaylistImportService {
 			});
 			
 			player.addEventListener('onError', e => {
-				console.log('Bellows | YT Player errored with code: ' + e.data);
-				reject('YT player error: ' + e.data);
+				Logger.Log("YT Player errored with code: " + e.data);
+				reject("YT player error: " + e.data);
 				cleanupPlayer();
 				return;
 			});
@@ -110,7 +111,7 @@ export class YouTubePlaylistImportService {
 	async createFoundryVTTPlaylist(playlistName, trackList, volume) : Promise<void> {
 		return new Promise(async (resolve, reject) => {
 			if (!playlistName || Object.prototype.toString.call(playlistName) !== "[object String]") {
-				reject('Enter playlist name');
+				reject("Enter playlist name");
 			}
 			
 			try {
@@ -160,7 +161,7 @@ export class YouTubePlaylistImportService {
 					await this.getTrack(player, 0);
 					break;
 				} catch(ex) {
-					console.log(`Bellows | getNextTrack timed out, retrying...`);
+					Logger.Log(`getNextTrack timed out, retrying...`);
 					if (f == 2) {
 						reject(ex);
 						return;

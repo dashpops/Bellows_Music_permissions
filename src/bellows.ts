@@ -1,9 +1,10 @@
+import { Logger } from "./utils";
 import { YoutubeApiFeature } from "./module/features/YoutubeFeature";
 import { TemplatePreloader } from "./module/helper/TemplatePreloader";
 import { BellowsSettings } from "./module/helper/Settings"
 
 Hooks.once("init", async () => {
-    console.log('Bellows | Initializing Bellows - The lungs of the Foundry!');
+    Logger.Log('Bellows | Initializing Bellows - The lungs of the Foundry!');
 
     BellowsSettings.registerSettings();
     
@@ -11,7 +12,7 @@ Hooks.once("init", async () => {
 });
 
 Hooks.once("ready", async () => {
-    console.log('Bellows | Initialized Bellows');
+    Logger.Log('Initialized Bellows');
 });
 
 /* 
