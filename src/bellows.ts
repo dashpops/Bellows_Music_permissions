@@ -9,8 +9,8 @@ Hooks.once("init", async () => {
 
     BellowsSettings.registerSettings();
 
-    BellowsPatch.patchFunctions();
-    
+    BellowsPatch.patchFoundryClassFunctions();
+
     await TemplatePreloader.preloadHandlebarsTemplates();
 });
 
@@ -28,7 +28,7 @@ if (module.hot) {
                 delete _templateCache[template];
             }
         }
-        
+
         TemplatePreloader.preloadHandlebarsTemplates().then(() => {
             for (const application in ui.windows) {
                 if (Object.prototype.hasOwnProperty.call(ui.windows, application)) {

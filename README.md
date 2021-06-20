@@ -1,4 +1,4 @@
-# Bellows - The Lungs of the Foundry!
+# Bellows - The lungs of the Foundry!
 ---
 
 * **Author**: casualchameleon (discord: casualchameleon#6618)
