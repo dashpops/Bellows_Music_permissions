@@ -29,7 +29,7 @@
   "exclude": [ 
     "node_modules", 
     "webpack.config.js",
-	  "foundry.js",
+    "foundry.js",
     "dist" 
   ]
 }

@@ -1,4 +1,4 @@
-import { Logger } from "../../utils";
+import { Logger } from "../helper/Utils";
 
 export class YoutubeIframeApi {
     private static instance: YoutubeIframeApi;
@@ -13,7 +13,7 @@ export class YoutubeIframeApi {
         return new Promise<void>((resolve) => {
             window.onYouTubeIframeAPIReady = function () {
                 YoutubeIframeApi.instance = new YoutubeIframeApi();
-                Logger.Log("YoutubeIframeApi successfully initialized");
+                Logger.LogDebug("YoutubeIframeApi successfully initialized");
                 resolve();
             };
 
@@ -25,7 +25,7 @@ export class YoutubeIframeApi {
 
                 const firstScriptTag = document.getElementsByTagName("script")[0];
                 firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-                Logger.Log("Downloading YoutubeIframeApi...");
+                Logger.LogDebug("Downloading YoutubeIframeApi...");
             }
         });
     }
@@ -51,12 +51,10 @@ export class YoutubeIframeApi {
         const playerId = this.getIdString(containerId, videoId);
 
         if (this.playersMap.has(playerId)) {
-            throw Error("Player already exists for this audio container!");
+            throw new Error("Player already exists for this audio container!");
         }
 
         return new Promise<YT.Player>((resolve, reject) => {
-            let player: YT.Player;
-
             const onPlayerError = function (event: YT.OnErrorEvent) {
                 let errorMessage: string;
                 switch (event.data) {
@@ -89,7 +87,7 @@ export class YoutubeIframeApi {
 
             $("body").append(`<div class="yt-player" id="${playerId}"></div>`);
 
-            player = new YT.Player(playerId, {
+            const player: YT.Player = new YT.Player(playerId, {
                 height: "270px",
                 width: "480px",
                 videoId: videoId,
@@ -103,6 +101,21 @@ export class YoutubeIframeApi {
 
     async destroyPlayer(containerId: number, videoId: string) {
         const playerId = this.getIdString(containerId, videoId);
+
+        const player = this.playersMap.get(playerId);
+        if (!player) {
+            throw new Error("Player does not exist!");
+        }
+
+        if (player.getPlayerState() === YT.PlayerState.PLAYING)
+			{
+				player.stopVideo();
+			}
+			
+            this.playersMap.delete(playerId);
+            player.destroy();
+
+			$(`div#${playerId}`).remove();
     }
 
     private getIdString(containerId: number, videoId: string) {

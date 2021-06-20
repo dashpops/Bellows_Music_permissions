@@ -1,6 +1,5 @@
-import { YoutubePlaylistItem } from '../../types/YoutubePlaylistItem.js';
-import { Logger } from '../../utils.js';
-import { getApi } from './index.js';
+import { YoutubePlaylistItem } from '../models/YoutubePlaylistItem';
+import { Logger } from '../helper/Utils';
 
 
 //private consts & funcs
@@ -35,7 +34,7 @@ function cleanupPlayer() {
 
 export class YouTubePlaylistImportService {
 	
-	extractPlaylistKey(playlistString) : string | undefined {
+	extractPlaylistKey(playlistString) {
 		//YouTube url (any string with a list querystring var)
 		//No reliable regex lookbehind for all browsers yet, so we'll just get the first capture group instead
 		const urlRegEx = /list\=([a-zA-Z0-9_-]+)/
@@ -54,7 +53,7 @@ export class YouTubePlaylistImportService {
 		}
 	}
 	
-	async getPlaylistInfo(playlistKey) : Promise<YoutubePlaylistItem[]> {
+	async getPlaylistInfo(playlistKey) {
 		return new Promise((resolve, reject) => {
 			
 			if (playlistKey == null) {
@@ -70,7 +69,7 @@ export class YouTubePlaylistImportService {
 			let api = getApi('youtube');
 			if (!api || !api.isReady()) {
 				//this should never really happen. The API is created during Foundry init.
-				Logger.Log("Unable to extract playlist info - API not ready");
+				Logger.LogError("Unable to extract playlist info - API not ready");
 				reject('API not ready');
 				return;
 			}	
@@ -90,7 +89,7 @@ export class YouTubePlaylistImportService {
 					resolve(videos);
 				}
 				catch (ex) {
-					Logger.Log("Error scraping youtube iframe: " + ex);
+					Logger.LogError("Error scraping youtube iframe: " + ex);
 					reject(ex);
 				}
 				finally {
@@ -100,7 +99,7 @@ export class YouTubePlaylistImportService {
 			});
 			
 			player.addEventListener('onError', e => {
-				Logger.Log("YT Player errored with code: " + e.data);
+				Logger.LogError("YT Player errored with code: " + e.data);
 				reject("YT player error: " + e.data);
 				cleanupPlayer();
 				return;
@@ -108,7 +107,7 @@ export class YouTubePlaylistImportService {
 		});
 	}
 	
-	async createFoundryVTTPlaylist(playlistName, trackList, volume) : Promise<void> {
+	async createFoundryVTTPlaylist(playlistName, trackList, volume) {
 		return new Promise(async (resolve, reject) => {
 			if (!playlistName || Object.prototype.toString.call(playlistName) !== "[object String]") {
 				reject("Enter playlist name");
@@ -146,7 +145,7 @@ export class YouTubePlaylistImportService {
 		});
 	}
 
-	private async scrapeVideoNames(player) : Promise<YoutubePlaylistItem[]> {
+	async scrapeVideoNames(player) {
 		return new Promise(async (resolve, reject) => {
 			
 			if (!player.getPlaylist()) {
@@ -154,14 +153,14 @@ export class YouTubePlaylistImportService {
 				return;
 			}
 			
-			let scrapedTracks: YoutubePlaylistItem[] = [];
+			let scrapedTracks = [];
 			
 			for (let f = 0; f < 3; f++) {
 				try {
 					await this.getTrack(player, 0);
 					break;
 				} catch(ex) {
-					Logger.Log(`getNextTrack timed out, retrying...`);
+					Logger.LogDebug(`getNextTrack timed out, retrying...`);
 					if (f == 2) {
 						reject(ex);
 						return;
@@ -184,7 +183,7 @@ export class YouTubePlaylistImportService {
 		});
 	}
 	
-	private async getTrack(player, idx) {
+	async getTrack(player, idx) {
 		let playNextVideo = new Promise((resolve) => {
 			player.addEventListener('onStateChange', e => {
 				if (e.data == -1) {

@@ -1,18 +1,17 @@
-import { Logger } from "./utils";
 import { YoutubeApiFeature } from "./module/features/YoutubeFeature";
 import { TemplatePreloader } from "./module/helper/TemplatePreloader";
 import { BellowsSettings } from "./module/helper/Settings"
+import { BellowsPatch } from "./module/helper/Patch";
+import { Logger } from "./module/helper/Utils";
 
 Hooks.once("init", async () => {
-    Logger.Log('Bellows | Initializing Bellows - The lungs of the Foundry!');
+    Logger.Log('Initializing Bellows - The lungs of the Foundry!');
 
     BellowsSettings.registerSettings();
+
+    BellowsPatch.patchFunctions();
     
     await TemplatePreloader.preloadHandlebarsTemplates();
-});
-
-Hooks.once("ready", async () => {
-    Logger.Log('Initialized Bellows');
 });
 
 /* 

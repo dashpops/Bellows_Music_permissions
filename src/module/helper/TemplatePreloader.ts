@@ -1,5 +1,3 @@
-import "../../../static/templates/**/*.hbs";
-
 export class TemplatePreloader {
     /**
      * Preload a set of templates to compile and cache them for fast access during rendering

@@ -1,6 +1,6 @@
-import { YoutubePlaylistItem } from "../../types/YoutubePlaylistItem.js";
-import { Logger } from "../../utils.js";
-import { YouTubePlaylistImportService } from "../services/YouTubePlaylistImportService.js";
+import { YoutubePlaylistItem } from "../models/YoutubePlaylistItem";
+import { Logger } from "../helper/Utils";
+import { YouTubePlaylistImportService } from "../services/YouTubePlaylistImportService";
 
 export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
 
@@ -38,7 +38,7 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
   }
 
   private async importPlaylist(playlistStr) {
-    let key = this._youtubePlaylistImportService.extractPlaylistKey(playlistStr);
+    const key = this._youtubePlaylistImportService.extractPlaylistKey(playlistStr);
     
     if (!key) {
       ui.notifications?.error(game.i18n.localize("bellows.import-yt-playlist-msg-invalid-key"));
@@ -52,7 +52,7 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
         ui.notifications?.error(game.i18n.format("bellows.import-yt-playlist-msg-key-not-found", {playlistKey: key}));
       } else {
         ui.notifications?.error(game.i18n.localize("bellows.import-yt-playlist-msg-error"));
-        Logger.Log(ex);
+        Logger.LogError(ex);
       }
     }
   }
@@ -87,7 +87,7 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
       await this._youtubePlaylistImportService.createFoundryVTTPlaylist(formData.playlistname, this._playlistItems, formData.playlistvolume);
       ui.notifications?.info(game.i18n.format("bellows.import-yt-playlist-msg-imported", {playlistName: formData.playlistname}));
     } catch (ex) {
-      Logger.Log(ex);
+      Logger.LogError(ex);
       ui.notifications?.error(game.i18n.localize("bellows.import-yt-playlist-msg-error"));
     }
   }

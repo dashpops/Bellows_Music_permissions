@@ -43,16 +43,5 @@
   ],
   "url": "This is auto replaced",
   "manifest": "This is auto replaced",
-  "download": "This is auto replaced",
-  "socket": true,
-  "media": [
-    {
-      "type": "icon",
-      "url": "./icons/music-spell.png"
-    },
-	{
-      "type": "icon",
-      "url": "./icons/music-spell.svg"
-    }
-  ]
+  "download": "This is auto replaced"
 }
