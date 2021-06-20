@@ -1,4 +1,4 @@
-import { Logger } from "../helper/Utils";
+import Logger from "../helper/Utils";
 import { YoutubeIframeApi } from "../api/YoutubeIframeApi";
 import { YoutubePlaylistImportForm } from "../applications/YoutubePlaylistImportForm";
 
@@ -10,14 +10,14 @@ export class YoutubeApiFeature {
             await YoutubeIframeApi.initializeApi();
         });
 
-        Hooks.on("renderPlaylistDirectory", (html) => {
+        Hooks.on("renderPlaylistDirectory", (_app, html) => {
             if (!game.user?.isGM) {
                 return;
             }
 
             const importButton = $(`
                 <button class="import-yt-playlist">
-                    <i class="fab fa-youtube"></i> ${game.i18n.localize('bellows.import-yt-playlist-nav-text')}
+                    <i class="fas fa-cloud-download-alt"></i> ${game.i18n.localize('bellows.import-yt-playlist-nav-text')}
                 </button>`);
                 
             html.find(".directory-footer").append(importButton);

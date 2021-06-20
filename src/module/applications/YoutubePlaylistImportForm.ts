@@ -1,5 +1,5 @@
 import { YoutubePlaylistItem } from "../models/YoutubePlaylistItem";
-import { Logger } from "../helper/Utils";
+import Logger from "../helper/Utils";
 import { YouTubePlaylistImportService } from "../services/YouTubePlaylistImportService";
 
 export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
@@ -19,7 +19,7 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       title: game.i18n.localize("bellows.import-yt-playlist-nav-text"),
-      template: "/modules/bellows/templates/apps/import-youtube-playlist.html"
+      template: "/modules/bellows/templates/apps/import-youtube-playlist.hbs"
     } as FormApplication.Options);
   }
   

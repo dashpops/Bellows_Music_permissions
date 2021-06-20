@@ -15,6 +15,8 @@ docs/
 node_modules/
 bin/
 obj/
+dist/*
+!dist/.gitkeep 
 
 # If you add foundry.js for autocomplete
 foundry.js

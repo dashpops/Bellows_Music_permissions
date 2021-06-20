@@ -1,5 +1,5 @@
 import { YoutubePlaylistItem } from '../models/YoutubePlaylistItem';
-import { Logger } from '../helper/Utils';
+import Logger from '../helper/Utils';
 
 
 //private consts & funcs

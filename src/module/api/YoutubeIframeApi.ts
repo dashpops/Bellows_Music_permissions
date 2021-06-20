@@ -1,4 +1,4 @@
-import { Logger } from "../helper/Utils";
+import Logger from "../helper/Utils";
 
 export class YoutubeIframeApi {
     private static instance: YoutubeIframeApi;

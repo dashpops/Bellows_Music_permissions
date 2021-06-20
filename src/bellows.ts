@@ -2,7 +2,7 @@ import { YoutubeApiFeature } from "./module/features/YoutubeFeature";
 import { TemplatePreloader } from "./module/helper/TemplatePreloader";
 import { BellowsSettings } from "./module/helper/Settings"
 import { BellowsPatch } from "./module/helper/Patch";
-import { Logger } from "./module/helper/Utils";
+import Logger from "./module/helper/Utils";
 
 Hooks.once("init", async () => {
     Logger.Log('Initializing Bellows - The lungs of the Foundry!');
