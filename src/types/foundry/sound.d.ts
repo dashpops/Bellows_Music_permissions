@@ -1,3 +1,7 @@
+/**
+ * Simple interface to represent the Foundry VTT Sound at compile time. Can be removed once the typescript types are updated in the community types package.
+ * This is NOT a complete interface.
+ */
 interface Sound {
     id: number;
     src: string;

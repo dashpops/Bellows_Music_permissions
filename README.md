@@ -21,8 +21,6 @@ This is a fork of temportalflux's fantastic [MusicAssist](https://github.com/tem
 
 Not all tracks and playlists are supported, as the YouTube author needs to enable embedding for Bellows to be able to play it.
 
-
-
 ## Installation
 Import the [module.json](https://raw.githubusercontent.com/casualchameleon/Bellows/master/module.json) as you would any other module. The contents of the module directory should look similar to this github repository's root.
 
@@ -41,4 +39,5 @@ The current feature set includes:
 
 ## Credits
 Massive thanks to [TemportalFlux](https://github.com/temportalflux) for his initial work on this project.
+
 Thanks to [Blackcloud010](https://github.com/Blackcloud010) for his fantastic project template, [FoundryVTT-Module-Template-Hotswap](https://github.com/Blackcloud010/FoundryVTT-Module-Template-Hotswap).

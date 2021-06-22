@@ -1,16 +1,39 @@
 {
-	"I18N.LANGUAGE": "Español",
-	"I18N.MAINTAINERS": "@Viriato139ac#0342",
-
-	"bellows.import-yt-playlist-nav-text": "Importar Lista de Reproducción de YouTube",
-	"bellows.import-yt-playlist-notes": "Introduzca la dirección de una Lista de Reproducción de YouTube o el ID de una Lista de Reproducción y haga clic en el botón de importar para que comience el proceso.",
-	"bellows.import-yt-playlist-btn-import": "Importar",
-	"bellows.import-yt-playlist-btn-submit": "Guardar",
-	"bellows.import-yt-playlist-msg-already-working": "La Lista de Reproducción se está importando. Por favor, espere",
-	"bellows.import-yt-playlist-msg-invalid-key": "Por favor, introduzca la dirección de una Lista de Reproducción de YouTube válida (debe tener la palabra list en la cadena de consulta) o el ID de una Lista de Reproducción válida",
-	"bellows.import-yt-playlist-msg-error": "Error al importar la Lista de Reproducción - consulte los detalles en la consola",
-	"bellows.import-yt-playlist-msg-key-not-found": "No existe la Lista de Reproducción con la clave {playlistKey} - compruebe la dirección o el ID e inténtelo de nuevo",
-	"bellows.import-yt-playlist-msg-imported": "La Lista de Reproducción {playlistName} ha sido importada con éxito",
-	"bellows.import-yt-playlist-lbl-name": "Nombre de la Lista de Reproducción",
-	"bellows.import-yt-playlist-lbl-volume": "Volumen por defecto"
+	"I18N": {
+		"LANGUAGE": "Español",
+		"MAINTAINERS": "@Viriato139ac#0342"
+	},
+	"Bellows": {
+		"ImportPlaylist": {
+			"Title": "Importar Lista de Reproducción de YouTube",
+			"Notes": "Introduzca la dirección de una Lista de Reproducción de YouTube o el ID de una Lista de Reproducción y haga clic en el botón de importar para que comience el proceso.",
+			"Buttons": {
+				"Import": "Importar",
+				"Submit": "Guardar"
+			},
+			"Messages": {
+				"AlreadyWorking": "La Lista de Reproducción se está importando. Por favor, espere",
+				"InvalidKey": "Por favor, introduzca la dirección de una Lista de Reproducción de YouTube válida (debe tener la palabra list en la cadena de consulta) o el ID de una Lista de Reproducción válida",
+				"Error": "Error al importar la Lista de Reproducción - consulte los detalles en la consola",
+				"KeyNotFound": "No existe la Lista de Reproducción con la clave {playlistKey} - compruebe la dirección o el ID e inténtelo de nuevo",
+				"ImportComplete": "La Lista de Reproducción {playlistName} ha sido importada con éxito"
+			},
+			"Labels": {
+				"Name": "Nombre de la Lista de Reproducción",
+				"Volume": "Volumen por defecto"
+			}
+		},
+		"PlaylistConfig": {
+			"Labels": {
+				"Streamed": "Streamed",
+				"StreamType": "Stream Type",
+				"AudioUrl": "Stream Url or Id"
+			},
+			"Selects": {
+				"StreamTypes": {
+					"Youtube": "Youtube"
+				}
+			}
+		}
+	}
 }
