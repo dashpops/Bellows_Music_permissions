@@ -1,6 +1,6 @@
 import { StreamIdExtractorFactory } from "../factories/StreamIdExtractorFactory";
+import { StreamSoundFactory } from "../factories/StreamSoundFactory";
 import Logger from "../helper/Utils";
-import { StreamingSound } from "../integration/StreamingSound";
 
 export class PlaylistSoundPatch {
     static patch() {
@@ -10,8 +10,8 @@ export class PlaylistSoundPatch {
             if (!hasProperty(this, "data.flags.bIsStreamed") || !this.data.flags.bIsStreamed) {
                 return createSoundFunction.apply(this);
             }
-            
-            const sound = new StreamingSound(this.data.flags.streamingApi, this.data.flags.streamingId);
+
+            const sound = StreamSoundFactory.getStreamSound(this.data.flags.streamingApi, this.data.flags.streamingId);
 
             sound.on("start", this._onStart.bind(this));
             sound.on("end", this._onEnd.bind(this));

@@ -5,18 +5,16 @@
 interface Sound {
     id: number;
     src: string;
-    container: AudioContainer;
     startTime: number | undefined;
     pausedTime: number | undefined;
     event: { stop: {} , start: {}, end: {}, pause: {}, load: {} } | undefined;
-    loading: Promise<void> | undefined;
     context: AudioContext | undefined;
     node: AudioBufferSourceNode | MediaElementAudioSourceNode | undefined;
     gain: AudioParam | undefined;
     currentTime: number;
     duration: number;
     loaded: boolean;
-    playing: boolean;
+    readonly playing: boolean;
     loop: boolean;
     volume: number;
     fade(volume: number, options: { duration: number, from: number, type: string }): Promise<void>;
@@ -27,5 +25,5 @@ interface Sound {
     schedule(fn: Function, playbackTime: number): Promise<null>;
     emit(eventName: string);
     off(eventName: string, fn: number | Function);
-    on(eventName: string, fn: Function, options: { once: boolean });
+    on(eventName: string, fn: Function, options?: { once: boolean });
 }
