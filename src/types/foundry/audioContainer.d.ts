@@ -3,15 +3,12 @@
  * This is NOT a complete interface.
  */
 interface AudioContainer {
-    sourceNode: AudioBufferSourceNode | MediaElementAudioSourceNode | undefined;
-    gainNode: GainNode | undefined;
+    src: string;
     isBuffer: boolean;
     loaded: boolean;
     playing: boolean;
     duration: number;
-    buffer: AudioBuffer;
-    context: AudioContext;
-    element: HTMLMediaElement;
+
     load(): Promise<void>;
     play(offset: number, onended: Function): void;
     stop(): void;

@@ -8,11 +8,11 @@ interface Sound {
     container: AudioContainer;
     startTime: number | undefined;
     pausedTime: number | undefined;
-    event: { stop: {}, start: {}, end: {}, pause: {}, load: {} };
+    event: { stop: {} , start: {}, end: {}, pause: {}, load: {} } | undefined;
     loading: Promise<void> | undefined;
-    context: AudioContext;
-    node: AudioBufferSourceNode | MediaElementAudioSourceNode;
-    gain: AudioParam;
+    context: AudioContext | undefined;
+    node: AudioBufferSourceNode | MediaElementAudioSourceNode | undefined;
+    gain: AudioParam | undefined;
     currentTime: number;
     duration: number;
     loaded: boolean;

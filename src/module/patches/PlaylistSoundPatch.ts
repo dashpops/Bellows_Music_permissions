@@ -1,25 +1,45 @@
-import { StreamIdExtractorFactory } from "../services/streaming/StreamIdExtractorFactory";
+import { StreamIdExtractorFactory } from "../factories/StreamIdExtractorFactory";
 import Logger from "../helper/Utils";
+import { StreamingSound } from "../integration/StreamingSound";
 
 export class PlaylistSoundPatch {
     static patch() {
         const createSoundFunction = PlaylistSound.prototype._createSound;
 
         PlaylistSound.prototype._createSound = function () {
-            return createSoundFunction.apply(this);
+            if (!hasProperty(this, "data.flags.bIsStreamed") || !this.data.flags.bIsStreamed) {
+                return createSoundFunction.apply(this);
+            }
+            
+            const sound = new StreamingSound(this.data.flags.streamingApi, this.data.flags.streamingId);
+
+            sound.on("start", this._onStart.bind(this));
+            sound.on("end", this._onEnd.bind(this));
+            sound.on("stop", this._onStop.bind(this));
+            
+            return sound;
         }
 
-        //Protected functions - get around that by ignoring.
+        //Protected function - get around that by ignoring typescript errors.
         // @ts-ignore
         const updateObjectFunction = PlaylistSoundConfig.prototype._updateObject
 
         // @ts-ignore
         PlaylistSoundConfig.prototype._updateObject = function (event: Event, formData: any) {
-            if (!game.user?.isGM) throw "You do not have the ability to configure an PlaylistSound object.";
+            if (!game.user?.isGM) throw new Error("You do not have the ability to configure a PlaylistSound object.");
 
             if (!formData.streamed) {
                 updateObjectFunction.apply(this, [event, formData]);
                 return;
+            }
+
+            const extractor = StreamIdExtractorFactory.getStreamIdExtractor(formData.streamtype);
+            let streamId: string;
+            try {
+                streamId = extractor.extract(formData.streamurl);
+            } catch (ex) {
+                Logger.LogError(ex);
+                throw new Error(game.i18n.localize("Bellows.PlaylistConfig.Errors.InvalidUri"));
             }
 
             formData["volume"] = AudioHelper.inputToVolume(formData["lvolume"]);
@@ -28,11 +48,11 @@ export class PlaylistSoundPatch {
             formData.flags = {
                 bIsStreamed: formData.streamed,
                 streamingApi: formData.streamType,
-                streamingId: formData.streamurl,
+                streamingId: streamId,
             };
 
-            if (this.object.id)  return this.object.update(formData);
-            return this.object.constructor.create(formData, {parent: this.object.parent});
+            if (this.object.id) return this.object.update(formData);
+            return this.object.constructor.create(formData, { parent: this.object.parent });
         }
 
         Hooks.on("renderPlaylistSoundConfig", (sender, html, data) => {
@@ -83,20 +103,6 @@ export class PlaylistSoundPatch {
                 const chkEvent = evt as JQuery.ChangeEvent<HTMLElement, undefined, HTMLElement, HTMLInputElement>
                 adjustVisibility(chkEvent.target.checked);
                 sender.setPosition();
-            });
-
-            inputStreamUrl.on('change', evt => {
-                const url = inputStreamUrl.val() as string;
-                if (url && url.length > 0) {
-                    const extractor = StreamIdExtractorFactory.getStreamIdExtractor(selectStreamType.val() as string);
-
-                    try {
-                        const id = extractor.extract(url);
-                    } catch (ex) {
-                        Logger.LogError(ex);
-                    }
-                    sender.setPosition();
-                }
             });
 
             adjustVisibility(bIsStreamed);

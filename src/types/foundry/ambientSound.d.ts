@@ -1,3 +1,3 @@
-declare interface AmbientSound {
+interface AmbientSound {
     _createSound();
 }

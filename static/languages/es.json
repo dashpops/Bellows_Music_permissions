@@ -33,6 +33,9 @@
 				"StreamTypes": {
 					"Youtube": "Youtube"
 				}
+			},
+			"Errors": {
+				"InvalidUri": "an invalid URI was provided"
 			}
 		}
 	}
