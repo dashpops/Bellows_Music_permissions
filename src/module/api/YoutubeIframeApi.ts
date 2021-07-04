@@ -91,6 +91,10 @@ export class YoutubeIframeApi {
                 height: "270px",
                 width: "480px",
                 videoId: videoId,
+                playerVars: {
+                    loop: 1, //we set this to 1 to prevent iframe reloading when loop is changed
+                    playlist: videoId
+                },
                 events: {
                     "onReady": onPlayerReadyCallback,
                     "onError": onPlayerError
@@ -107,15 +111,14 @@ export class YoutubeIframeApi {
             throw new Error("Player does not exist!");
         }
 
-        if (player.getPlayerState() === YT.PlayerState.PLAYING)
-			{
-				player.stopVideo();
-			}
-			
-            this.playersMap.delete(playerId);
-            player.destroy();
+        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+            player.stopVideo();
+        }
 
-			$(`div#${playerId}`).remove();
+        this.playersMap.delete(playerId);
+        player.destroy();
+
+        $(`div#${playerId}`).remove();
     }
 
     private getIdString(containerId: number, videoId: string) {
