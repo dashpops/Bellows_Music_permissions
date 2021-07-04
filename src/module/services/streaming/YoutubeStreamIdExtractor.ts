@@ -4,7 +4,7 @@ export class YoutubeStreamIdExtractor implements StreamIdExtractor {
          * Url regex string credit https://stackoverflow.com/questions/3717115/regular-expression-for-youtube-links
          * should work for any given youtube link
          */
-        const urlRegEx = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)[\w\=]*)?/
+        const urlRegEx = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-_]*)(&(amp;)[\w=]*)?/
 		//Plain video key
 		const keyRegEx = /^[a-zA-Z0-9_-]+$/
 		
@@ -12,7 +12,7 @@ export class YoutubeStreamIdExtractor implements StreamIdExtractor {
 			throw new Error("Cannot extract an empty URI");
 		}
 		
-		var matches = urlRegEx.exec(uri);
+		const matches = urlRegEx.exec(uri);
 		if (matches) {
 			return matches[1];
 		} else {

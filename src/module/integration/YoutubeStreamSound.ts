@@ -1,3 +1,4 @@
+import { PlayerState } from "../../types/streaming/youtube";
 import { YoutubeIframeApi } from "../api/YoutubeIframeApi";
 import Logger from "../helper/Utils";
 
@@ -7,9 +8,10 @@ export class YoutubeStreamSound implements Sound {
     src: string;
     private _player: YT.Player | undefined;
     private _fadeIntervalHandler: number | undefined;
-    private _loop: boolean = false;
+    private _loop = false;
     private _scheduledEvents = new Set<number>();
     private _eventHandlerId = 1;
+    private _loaded = false;
     startTime: number | undefined;
     pausedTime: number | undefined;
     events = { stop: {}, start: {}, end: {}, pause: {}, load: {}, };
@@ -17,7 +19,6 @@ export class YoutubeStreamSound implements Sound {
     context: AudioContext | undefined;
     node: AudioBufferSourceNode | MediaElementAudioSourceNode | undefined;
     gain: AudioParam | undefined;
-    loaded: boolean = false;
 
     public get volume(): number {
         if (!this._player) {
@@ -46,14 +47,16 @@ export class YoutubeStreamSound implements Sound {
 
     public get duration(): number {
         if (!this._player) {
-            throw new Error("Cannot get duration of uninitialised player!");
+            this.load().then(s => {
+                return s.duration;
+            });
         }
 
-        return this._player.getDuration();
+        return this._player?.getDuration() ?? 0;
     }
 
     public get playing(): boolean {
-        return (this._player?.getPlayerState() == YT.PlayerState.PLAYING ?? false)
+        return (this._player?.getPlayerState() as unknown as PlayerState == PlayerState.PLAYING ?? false)
     }
 
     public get loop() {
@@ -64,6 +67,14 @@ export class YoutubeStreamSound implements Sound {
         if (!this._player) return;
         this._player.setLoop(looping);
         this._loop = looping;
+    }
+
+    public get loaded() {
+        return this._loaded;
+    }
+
+    private set loaded(loaded: boolean) {
+        this._loaded = loaded;
     }
 
     constructor(src: any) {
@@ -120,8 +131,9 @@ export class YoutubeStreamSound implements Sound {
 
         if (!this._player) {
             this.loading = YoutubeIframeApi.getInstance().createPlayer(this.id, this.src);
-            await this.loading;
+            this._player = await this.loading;
             this.loading = undefined;
+            this.loaded = true;
         }
 
         // Trigger automatic playback actions
@@ -147,7 +159,7 @@ export class YoutubeStreamSound implements Sound {
             this.loop = loop;
             if ((volume !== undefined) && (volume !== this.volume)) {
                 if (fade) return this.fade(volume, { duration: fade });
-                else this.volume = volume;
+                else this.volume = volume * 100; //foundry volume is between 0 & 1, YT player volume is between 0 and 100
             }
             return;
         }
@@ -167,7 +179,7 @@ export class YoutubeStreamSound implements Sound {
         this.volume = 0; // Start volume at 0
         this._player?.playVideo()
         this._player?.seekTo(offset, true);
-        this._player?.addEventListener<YT.OnStateChangeEvent>('onStateChange', (e) => this._onEnd.bind(this, e));
+        this._player?.addEventListener<YT.OnStateChangeEvent>('onStateChange', this._onEnd.bind(this));
         adjust(); // Adjust to the desired volume
         this._onStart();
     }
@@ -187,7 +199,9 @@ export class YoutubeStreamSound implements Sound {
         this._onStop();
     }
 
+    /* eslint-disable */
     schedule(fn: Function, playbackTime: number): Promise<void> {
+        /* eslint-enable */
         const now = this.currentTime ?? 0;
         playbackTime = Math.clamped(playbackTime, 0, this.duration);
         if (playbackTime < now) playbackTime += this.duration;
@@ -205,7 +219,7 @@ export class YoutubeStreamSound implements Sound {
     emit(eventName: string) {
         const events = this.events[eventName]
         if (!events) return;
-        for (let [fnId, callback] of Object.entries(events)) {
+        for (const [fnId, callback] of Object.entries(events)) {
             //@ts-ignore -- typings stuff. Safe to ignore.
             callback.fn(this);
             //@ts-ignore
@@ -213,23 +227,28 @@ export class YoutubeStreamSound implements Sound {
         }
     }
 
+    /* eslint-disable */
     off(eventName: string, fn: number | Function) {
+        /* eslint-enable */
         const events = this.events[eventName];
         if (!events) return;
         if (Number.isNumeric(fn)) delete events[fn];
-        for (let [id, f] of Object.entries(events)) {
+        for (const [id, f] of Object.entries(events)) {
             if (f === fn) {
                 delete events[id];
                 break;
             }
         }
     }
-
+    /* eslint-disable */
     on(eventName: string, fn: Function, { once = false } = {}) {
-        return this._registerForEvent(eventName, { callback: fn, once });
+        /* eslint-enable */
+        return this._registerForEvent(eventName, { fn, once });
     }
 
-    private _registerForEvent(eventName, callback: { callback: Function, once?: boolean }) {
+    /* eslint-disable */
+    private _registerForEvent(eventName, callback: { fn: Function, once?: boolean }) {
+        /* eslint-enable */
         const events = this.events[eventName];
         if (!events) return;
         const fnId = this._eventHandlerId++;
@@ -244,14 +263,15 @@ export class YoutubeStreamSound implements Sound {
     /* -------------------------------------------- */
 
     protected _clearEvents() {
-        for (let timeoutId of this._scheduledEvents) {
+        for (const timeoutId of this._scheduledEvents) {
             window.clearTimeout(timeoutId)
         }
         this._scheduledEvents.clear();
     }
 
     protected _onEnd(e: YT.OnStateChangeEvent) {
-        if (e.data == YT.PlayerState.ENDED) {
+        console.log("_onEnd Called!")
+        if (e.data as unknown as PlayerState == PlayerState.ENDED) {
             this._clearEvents();
             //@ts-ignore
             game.audio.playing.delete(this.id);

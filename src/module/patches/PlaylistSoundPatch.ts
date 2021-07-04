@@ -1,5 +1,6 @@
 import { StreamIdExtractorFactory } from "../factories/StreamIdExtractorFactory";
 import { StreamSoundFactory } from "../factories/StreamSoundFactory";
+import { StreamType } from "../../types/streaming/streamType";
 import Logger from "../helper/Utils";
 
 export class PlaylistSoundPatch {
@@ -33,7 +34,8 @@ export class PlaylistSoundPatch {
                 return;
             }
 
-            const extractor = StreamIdExtractorFactory.getStreamIdExtractor(formData.streamtype);
+            const streamType = StreamType[formData.streamtype as string];
+            const extractor = StreamIdExtractorFactory.getStreamIdExtractor(streamType);
             let streamId: string;
             try {
                 streamId = extractor.extract(formData.streamurl);
@@ -47,7 +49,7 @@ export class PlaylistSoundPatch {
             formData.path = 'streamed.mp3';
             formData.flags = {
                 bIsStreamed: formData.streamed,
-                streamingApi: formData.streamType,
+                streamingApi: streamType,
                 streamingId: streamId,
             };
 
@@ -83,7 +85,7 @@ export class PlaylistSoundPatch {
                 <label>
                     ${game.i18n.localize("Bellows.PlaylistConfig.Labels.StreamType")}
                 </label>
-                <select name="streamtype" disabled>
+                <select name="streamtype">
                     <option value="youtube" selected>${game.i18n.localize("Bellows.PlaylistConfig.Selects.StreamTypes.Youtube")}</option>
                 </select>
             </div>

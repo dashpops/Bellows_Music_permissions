@@ -1,3 +1,4 @@
+import { PlayerError, PlayerState } from "../../types/streaming/youtube";
 import Logger from "../helper/Utils";
 
 export class YoutubeIframeApi {
@@ -57,18 +58,19 @@ export class YoutubeIframeApi {
         return new Promise<YT.Player>((resolve, reject) => {
             const onPlayerError = function (event: YT.OnErrorEvent) {
                 let errorMessage: string;
-                switch (event.data) {
-                    case YT.PlayerError.InvalidParam:
+                const data = event.data as unknown as PlayerError;
+                switch (data) {
+                    case PlayerError.InvalidParam:
                         errorMessage = "Invalid videoId value.";
                         break;
-                    case YT.PlayerError.Html5Error:
+                    case PlayerError.Html5Error:
                         errorMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
                         break;
-                    case YT.PlayerError.VideoNotFound:
+                    case PlayerError.VideoNotFound:
                         errorMessage = "Video not found; It may have been deleted or marked as private.";
                         break;
-                    case YT.PlayerError.EmbeddingNotAllowed:
-                    case YT.PlayerError.EmbeddingNotAllowed2:
+                    case PlayerError.EmbeddingNotAllowed:
+                    case PlayerError.EmbeddingNotAllowed2:
                         errorMessage = "Embedding is not supported for this video.";
                         break;
                     default:
@@ -96,8 +98,8 @@ export class YoutubeIframeApi {
                     playlist: videoId
                 },
                 events: {
-                    "onReady": onPlayerReadyCallback,
-                    "onError": onPlayerError
+                    "onReady": onPlayerReadyCallback.bind(this),
+                    "onError": onPlayerError.bind(this)
                 }
             });
         });
@@ -111,7 +113,7 @@ export class YoutubeIframeApi {
             throw new Error("Player does not exist!");
         }
 
-        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+        if (player.getPlayerState() as unknown as PlayerState === PlayerState.PLAYING) {
             player.stopVideo();
         }
 
