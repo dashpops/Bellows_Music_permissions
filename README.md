@@ -11,7 +11,7 @@
 
 ## Link(s) to Module
 * https://github.com/casualchameleon/Bellows
-* https://raw.githubusercontent.com/casualchameleon/Bellows/master/module.json
+* https://github.com/casualchameleon/Bellows/releases/latest/download/module.json
 
 ## Description
 This is a fork of temportalflux's fantastic [MusicAssist](https://github.com/temportalflux/MusicAssist) module which is no longer actively maintained. It aims to add support for youtube tracks and playlists, allowing users to grab their favorite youtube playlists and songs and save them as tracks in FVTT. These tracks are played back on each user's computer according to the normal playlist controls. This does require an internet connection to work properly, as it streams the video and just plays the audio.
