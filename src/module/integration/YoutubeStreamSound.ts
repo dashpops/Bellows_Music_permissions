@@ -12,6 +12,7 @@ export class YoutubeStreamSound implements Sound {
     private _scheduledEvents = new Set<number>();
     private _eventHandlerId = 1;
     private _loaded = false;
+
     startTime: number | undefined;
     pausedTime: number | undefined;
     events = { stop: {}, start: {}, end: {}, pause: {}, load: {}, };
@@ -38,8 +39,11 @@ export class YoutubeStreamSound implements Sound {
 
     public get currentTime(): number | undefined {
         if (!this._player) {
-            Logger.LogError("Cannot get current time of uninitialised player!");
             return undefined;
+        }
+
+        if (this.pausedTime) {
+            return this.pausedTime;
         }
 
         return this._player.getCurrentTime();
@@ -47,9 +51,7 @@ export class YoutubeStreamSound implements Sound {
 
     public get duration(): number {
         if (!this._player) {
-            this.load().then(s => {
-                return s.duration;
-            });
+            return 0;
         }
 
         return this._player?.getDuration() ?? 0;
@@ -64,9 +66,9 @@ export class YoutubeStreamSound implements Sound {
     }
 
     public set loop(looping) {
+        this._loop = looping;
         if (!this._player) return;
         this._player.setLoop(looping);
-        this._loop = looping;
     }
 
     public get loaded() {
@@ -127,26 +129,13 @@ export class YoutubeStreamSound implements Sound {
             await new Promise(resolve => game.audio.pending.push(resolve));
         }
 
-        if (this.loading instanceof Promise) await this.loading;
-
-        if (!this._player) {
-            this.loading = YoutubeIframeApi.getInstance().createPlayer(this.id, this.src);
-            this._player = await this.loading;
-            this.loading = undefined;
-            this.loaded = true;
-        }
-
         // Trigger automatic playback actions
         if (autoplay) this.play(autoplayOptions);
 
-        return this;
+        return new Promise(resolve => { resolve(this); });
     }
 
-    play({ loop = false, offset, volume, fade = 0 }: { loop?: boolean; offset?: number; volume?: number; fade?: number; } = {}) {
-        if (!this.loaded) {
-            return Logger.LogError(`You cannot play youtube stream sound ${this.src} before it has loaded`);
-        }
-
+    async play({ loop = false, offset, volume, fade = 0 }: { loop?: boolean; offset?: number; volume?: number; fade?: number; } = {}) {
         // If we are still awaiting the first user interaction, add this playback to a pending queue
         if (game.audio.locked) {
             Logger.LogDebug(`Delaying playback of youtube stream sound ${this.src} until after first user gesture`);
@@ -154,6 +143,25 @@ export class YoutubeStreamSound implements Sound {
             //@ts-ignore -- types incorrectly define pending as an Array<Howl> - just an array of functions...
             return game.audio.pending.push(() => this.play({ loop, offset, volume, fade }));
         }
+
+        if (this.loading instanceof Promise) {
+            await this.loading;
+        }
+
+        //Grab player
+        if (!this._player) {
+            this.loading = YoutubeIframeApi.getInstance().createPlayer(this.id, this.src);
+            this.loading.then(player => {
+                this._player = player;
+                this.loaded = false;
+            }).catch(reason => {
+                Logger.LogError(`Failed to load track ${this.src} - ${reason}`);
+            }).finally(() => {
+                this.loading = undefined;
+            });
+        }
+
+        await this.loading;
 
         const adjust = () => {
             this.loop = loop;
@@ -171,14 +179,14 @@ export class YoutubeStreamSound implements Sound {
         }
 
         // Configure playback
-        offset = (offset ?? this.pausedTime ?? 0) % this.duration;
+        offset = (offset ?? this.pausedTime ?? 0);
         this.startTime = this.currentTime;
         this.pausedTime = undefined;
 
         // Start playback
         this.volume = 0; // Start volume at 0
-        this._player?.playVideo()
         this._player?.seekTo(offset, true);
+
         this._player?.addEventListener<YT.OnStateChangeEvent>('onStateChange', this._onEnd.bind(this));
         adjust(); // Adjust to the desired volume
         this._onStart();
@@ -196,7 +204,10 @@ export class YoutubeStreamSound implements Sound {
         this.pausedTime = undefined;
         this.startTime = undefined;
         this._player?.stopVideo();
-        this._onStop();
+        YoutubeIframeApi.getInstance().destroyPlayer(this.id, this.src).then(() => {
+            this._player = undefined;
+            this._onStop();
+        });
     }
 
     /* eslint-disable */
@@ -270,12 +281,16 @@ export class YoutubeStreamSound implements Sound {
     }
 
     protected _onEnd(e: YT.OnStateChangeEvent) {
-        console.log("_onEnd Called!")
         if (e.data as unknown as PlayerState == PlayerState.ENDED) {
-            this._clearEvents();
-            //@ts-ignore
-            game.audio.playing.delete(this.id);
-            this.emit("end");
+            if (!this.loop) {
+                this._clearEvents();
+                //@ts-ignore
+                game.audio.playing.delete(this.id);
+                YoutubeIframeApi.getInstance().destroyPlayer(this.id, this.src).then(() => {
+                    this._player = undefined;
+                });
+                this.emit("end");
+            }
         }
     }
 
