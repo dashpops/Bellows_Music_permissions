@@ -1,4 +1,4 @@
 export enum StreamType {
-    undefined,
-    youtube
+    undefined = "",
+    youtube = "youtube"
 }
