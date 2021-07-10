@@ -1,0 +1,3 @@
+interface AmbientSound {
+    _createSound();
+}
