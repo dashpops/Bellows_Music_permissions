@@ -1,6 +1,6 @@
 import { YoutubePlaylistItem } from "../models/YoutubePlaylistItem";
 import Logger from "../helper/Utils";
-import { YouTubePlaylistImportService } from "../services/YouTubePlaylistImportService";
+import { YouTubePlaylistImportService } from "../services/import/YouTubePlaylistImportService";
 
 export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
 
@@ -18,7 +18,7 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
   
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      title: game.i18n.localize("bellows.import-yt-playlist-nav-text"),
+      title: game.i18n.localize("Bellows.ImportPlaylist.Title"),
       template: "/modules/bellows/templates/apps/import-youtube-playlist.hbs"
     } as FormApplication.Options);
   }
@@ -41,7 +41,7 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
     const key = this._youtubePlaylistImportService.extractPlaylistKey(playlistStr);
     
     if (!key) {
-      ui.notifications?.error(game.i18n.localize("bellows.import-yt-playlist-msg-invalid-key"));
+      ui.notifications?.error(game.i18n.localize("Bellows.ImportPlaylist.Messages.InvalidKey"));
       return;
     }
 
@@ -49,9 +49,9 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
       this._playlistItems = await this._youtubePlaylistImportService.getPlaylistInfo(key);
     } catch(ex) {
       if (ex == "Invalid Playlist") {
-        ui.notifications?.error(game.i18n.format("bellows.import-yt-playlist-msg-key-not-found", {playlistKey: key}));
+        ui.notifications?.error(game.i18n.format("Bellows.ImportPlaylist.Messages.KeyNotFound", {playlistKey: key}));
       } else {
-        ui.notifications?.error(game.i18n.localize("bellows.import-yt-playlist-msg-error"));
+        ui.notifications?.error(game.i18n.localize("Bellows.ImportPlaylist.Messages.Error"));
         Logger.LogError(ex);
       }
     }
@@ -59,7 +59,7 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
 
   async _onImport(e) {
     if (this._working) {
-      ui.notifications?.error(game.i18n.localize("bellows.import-yt-playlist-msg-already-working"));
+      ui.notifications?.error(game.i18n.localize("Bellows.ImportPlaylist.Messages.AlreadyWorking"));
       return;
     }
 
@@ -85,10 +85,10 @@ export class YoutubePlaylistImportForm extends FormApplication<any, any, any> {
   async _updateObject(_e, formData) {
     try {
       await this._youtubePlaylistImportService.createFoundryVTTPlaylist(formData.playlistname, this._playlistItems, formData.playlistvolume);
-      ui.notifications?.info(game.i18n.format("bellows.import-yt-playlist-msg-imported", {playlistName: formData.playlistname}));
+      ui.notifications?.info(game.i18n.format("Bellows.ImportPlaylist.Messages.ImportComplete", {playlistName: formData.playlistname}));
     } catch (ex) {
       Logger.LogError(ex);
-      ui.notifications?.error(game.i18n.localize("bellows.import-yt-playlist-msg-error"));
+      ui.notifications?.error(game.i18n.localize("Bellows.ImportPlaylist.Messages.Error"));
     }
   }
 }

@@ -17,7 +17,7 @@ export class YoutubeApiFeature {
 
             const importButton = $(`
                 <button class="import-yt-playlist">
-                    <i class="fas fa-cloud-download-alt"></i> ${game.i18n.localize('bellows.import-yt-playlist-nav-text')}
+                    <i class="fas fa-cloud-download-alt"></i> ${game.i18n.localize('Bellows.ImportPlaylist.Title')}
                 </button>`);
                 
             html.find(".directory-footer").append(importButton);
