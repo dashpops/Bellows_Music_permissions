@@ -6,12 +6,13 @@ export class YoutubeStreamSound implements Sound {
 
     id: number;
     src: string;
+    loaded = false;
     private _player: YT.Player | undefined;
     private _fadeIntervalHandler: number | undefined;
     private _loop = false;
     private _scheduledEvents = new Set<number>();
     private _eventHandlerId = 1;
-    private _loaded = false;
+    private _volume = 0;
 
     startTime: number | undefined;
     pausedTime: number | undefined;
@@ -21,20 +22,20 @@ export class YoutubeStreamSound implements Sound {
     node: AudioBufferSourceNode | MediaElementAudioSourceNode | undefined;
     gain: AudioParam | undefined;
 
+    //foundry volume is between 0 & 1, YT player volume is between 0 and 100
     public get volume(): number {
-        if (!this._player) {
-            throw new Error("Cannot get volume of uninitialised player!");
+        if (this._player) {
+            return this._player.getVolume() / 100;
         }
 
-        return this._player.getVolume();
+        return this._volume;
     }
 
     public set volume(volume: number) {
-        if (!this._player) {
-            throw new Error("Cannot set volume of uninitialised player!");
+        if (this._player) {
+            this._player.setVolume(volume * 100);
         }
-
-        this._player.setVolume(volume);
+        this._volume = volume;
     }
 
     public get currentTime(): number | undefined {
@@ -71,18 +72,14 @@ export class YoutubeStreamSound implements Sound {
         this._player.setLoop(looping);
     }
 
-    public get loaded() {
-        return this._loaded;
-    }
-
-    private set loaded(loaded: boolean) {
-        this._loaded = loaded;
-    }
-
-    constructor(src: any) {
+    constructor(src: any, preload = false) {
         this.src = src;
         //@ts-ignore -- missing static var from community types, safe to ignore.
         this.id = ++Sound._nodeId;
+
+        //ambient sounds need 'preloaded' sounds as they don't call .load.
+        //TODO: preload players in the background for a scene to enable instant playback
+        this.loaded = preload;
     }
 
     //currently don't support type - uses sin easing function
@@ -129,6 +126,8 @@ export class YoutubeStreamSound implements Sound {
             await new Promise(resolve => game.audio.pending.push(resolve));
         }
 
+        this.loaded = true;
+
         // Trigger automatic playback actions
         if (autoplay) this.play(autoplayOptions);
 
@@ -153,7 +152,6 @@ export class YoutubeStreamSound implements Sound {
             this.loading = YoutubeIframeApi.getInstance().createPlayer(this.id, this.src);
             this.loading.then(player => {
                 this._player = player;
-                this.loaded = false;
             }).catch(reason => {
                 Logger.LogError(`Failed to load track ${this.src} - ${reason}`);
             }).finally(() => {
@@ -167,7 +165,7 @@ export class YoutubeStreamSound implements Sound {
             this.loop = loop;
             if ((volume !== undefined) && (volume !== this.volume)) {
                 if (fade) return this.fade(volume, { duration: fade });
-                else this.volume = volume * 100; //foundry volume is between 0 & 1, YT player volume is between 0 and 100
+                else this.volume = volume;
             }
             return;
         }

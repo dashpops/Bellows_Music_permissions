@@ -46,7 +46,7 @@ export class PlaylistSoundPatch {
 
             formData["volume"] = AudioHelper.inputToVolume(formData["lvolume"]);
 
-            formData.path = 'streamed.mp3';
+            formData.path = `${streamId}.mp3`;
             formData.flags = {
                 bIsStreamed: formData.streamed,
                 streamingApi: streamType,
@@ -59,9 +59,9 @@ export class PlaylistSoundPatch {
 
         Hooks.on("renderPlaylistSoundConfig", (sender, html, data) => {
             //TODO: Hacky and fragile. Rewrite
-            const bIsStreamed = (data.flags || {}).bIsStreamed || false;
+            const bIsStreamed = (data.data.flags || {}).bIsStreamed || false;
             //const streamType = (data.flags || {}).streamingApi || "";
-            const streamId = (data.flags || {}).streamingId || "";
+            const streamId = (data.data.flags || {}).streamingId || "";
 
             const audioUrlDiv = $(html).find("div.form-fields input[name='path']").parent().parent();
 

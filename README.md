@@ -2,7 +2,7 @@
 ---
 
 * **Author**: casualchameleon (discord: casualchameleon#6618)
-* **Version**: 0.3.2
+* **Version**: 0.4.0 prerelease
 * **Foundry VTT Compatibility**: Tested on 0.6.6 and 0.7.5
 * **System Compatibility (If applicable)**: n/a
 * **Module Requirement(s)**: n/a
