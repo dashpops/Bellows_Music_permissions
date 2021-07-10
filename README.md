@@ -3,11 +3,16 @@
 
 * **Author**: casualchameleon (discord: casualchameleon#6618)
 * **Version**: 0.4.1 prerelease
-* **Foundry VTT Compatibility**: Tested on 0.6.6 and 0.7.5
+* **Foundry VTT Compatibility**: 
+  * 0.3.2 Tested on 0.6.6 and 0.7.5 
+  * 0.4.1 Tested on 0.8.6 and 0.8.8
 * **System Compatibility (If applicable)**: n/a
 * **Module Requirement(s)**: n/a
 * **Module Conflicts**: Reported to conflict with Maestro - YMMV. It's plausible that any modules that change the playlist or ambient sound data could conflict with Bellows.
 * **Translation Support**: Playlist import is localised at the moment, but nothing else. This is coming soon.
+
+## Upgrading Bellows to Foundry 0.8+
+If you have a previous installation of Bellows, then you'll need to reinstall the module as the manifest location has changed (sorry) - however, all your playlists and tracks will still work once the new version is installed.
 
 ## Link(s) to Module
 * https://github.com/casualchameleon/Bellows
@@ -19,7 +24,7 @@ This is a fork of temportalflux's fantastic [MusicAssist](https://github.com/tem
 Not all tracks and playlists are supported, as the YouTube author needs to enable embedding for Bellows to be able to play it.
 
 ## Installation
-Import the [module.json](https://raw.githubusercontent.com/casualchameleon/Bellows/master/module.json) as you would any other module. The contents of the module directory should look similar to this github repository's root.
+Import the [module.json](https://github.com/casualchameleon/Bellows/releases/latest/download/module.json) as you would any other module. The contents of the module directory should look similar to this github repository's root.
 
 ## Features
 
