@@ -5,7 +5,7 @@
 * **Version**: 0.4.1 prerelease
 * **Foundry VTT Compatibility**: 
   * 0.3.2 Tested on 0.6.6 and 0.7.5 
-  * 0.4.1 Tested on 0.8.6 and 0.8.8
+  * 0.4.1 Tested on 0.8.8 - **confirmed incompatible with 0.8.6**
 * **System Compatibility (If applicable)**: n/a
 * **Module Requirement(s)**: n/a
 * **Module Conflicts**: Reported to conflict with Maestro - YMMV. It's plausible that any modules that change the playlist or ambient sound data could conflict with Bellows.
