@@ -5,8 +5,8 @@
   "version": "This is auto replaced",
   "library": "false",
   "manifestPlusVersion": "1.0.0",
-  "minimumCoreVersion": "0.8.6",
-  "compatibleCoreVersion": "0.8.8",
+  "minimumCoreVersion": "9",
+  "compatibleCoreVersion": "9",
   "authors": [
     {
       "name": "casualchameleon",
@@ -14,21 +14,11 @@
       "discord": "casualchameleon#6618"
     }
   ],
-  "dependencies": [
-
-  ],
-  "conflicts": [
-
-  ],
-  "esmodules": [
-    "bellows.js"
-  ],
-  "scripts": [
-  
-  ],
-  "styles": [
-    "/styles/bellows.css"
-  ],
+  "dependencies": [],
+  "conflicts": [],
+  "esmodules": ["bellows.js"],
+  "scripts": [],
+  "styles": ["/styles/bellows.css"],
   "languages": [
     {
       "lang": "en",
