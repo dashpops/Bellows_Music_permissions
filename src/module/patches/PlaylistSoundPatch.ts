@@ -27,7 +27,6 @@ export class PlaylistSoundPatch {
 
         // @ts-ignore
         PlaylistSoundConfig.prototype._updateObject = function (event: Event, formData: any) {
-            if (!game.user?.isGM) throw new Error("You do not have the ability to configure a PlaylistSound object.");
 
             if (!formData.streamed) {
                 updateObjectFunction.apply(this, [event, formData]);
